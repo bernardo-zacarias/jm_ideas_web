@@ -20,26 +20,6 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Vista de checkout para usuarios autenticados
-     */
-    public function index()
-    {
-        $carrito = Carrito::where('usuario_id', Auth::id())
-                         ->where('estado', 'activo')
-                         ->with('items')
-                         ->first();
-
-        if (!$carrito || $carrito->items->isEmpty()) {
-            return redirect()->route('carrito.index')->with('error', 'Tu carrito está vacío.');
-        }
-
-        $total = $carrito->items->sum('costo_final');
-        $usuario = Auth::user();
-
-        return view('checkout.index', compact('carrito', 'total', 'usuario'));
-    }
-
-    /**
      * Vista de checkout público (sin autenticación requerida)
      */
     public function indexPublic()
@@ -62,76 +42,6 @@ class CheckoutController extends Controller
 
         // Pasar datos a la vista para que el usuario complete sus datos
         return view('checkout.guest', compact('items', 'total'));
-    }
-
-    /**
-     * Crear pedido para usuario autenticado
-     */
-    public function store(Request $request)
-    {
-        // Validar que el usuario esté autenticado
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Debes iniciar sesión para continuar.');
-        }
-
-        $carrito = Carrito::where('usuario_id', Auth::id())
-                         ->where('estado', 'activo')
-                         ->with('items')
-                         ->first();
-
-        if (!$carrito || $carrito->items->isEmpty()) {
-            return redirect()->route('carrito.index')->with('error', 'Tu carrito está vacío.');
-        }
-
-        $total = $carrito->items->sum('costo_final');
-
-        DB::beginTransaction();
-
-        try {
-            // Crear pedido para usuario autenticado
-            $pedido = Pedido::create([
-                'usuario_id' => Auth::id(),
-                'estado' => 'pendiente_pago',
-                'total' => $total,
-                'metodo_pago' => null,
-            ]);
-
-            // Copiar items del carrito al pedido
-            foreach ($carrito->items as $itemCarrito) {
-                $nombreProducto = 'Producto';
-                if ($itemCarrito->producto_id && $itemCarrito->producto) {
-                    $nombreProducto = $itemCarrito->producto->nombre;
-                } elseif ($itemCarrito->cotizacion_id && $itemCarrito->cotizacion) {
-                    $nombreProducto = $itemCarrito->cotizacion->nombre;
-                }
-                
-                ItemPedido::create([
-                    'pedido_id' => $pedido->id,
-                    'cotizacion_id' => $itemCarrito->cotizacion_id,
-                    'producto_id' => $itemCarrito->producto_id,
-                    'producto_nombre' => $nombreProducto,
-                    'cantidad' => $itemCarrito->cantidad,
-                    'costo_final' => $itemCarrito->costo_final,
-                    'ancho' => $itemCarrito->ancho,
-                    'alto' => $itemCarrito->alto,
-                    'requiere_diseno' => $itemCarrito->requiere_diseno,
-                    'ruta_archivo' => $itemCarrito->ruta_archivo,
-                    'design_data' => $itemCarrito->design_data ?? null,
-                ]);
-            }
-
-            $carrito->estado = 'completado';
-            $carrito->save();
-            
-            DB::commit();
-
-            return redirect()->route('transbank.iniciar', $pedido->id);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error("Error en Checkout autenticado: " . $e->getMessage());
-            return redirect()->route('carrito.index')->with('error', 'Error al procesar tu pedido.');
-        }
     }
 
     /**

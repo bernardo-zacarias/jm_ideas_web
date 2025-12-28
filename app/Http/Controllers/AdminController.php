@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Pedido;
-use App\Models\Cotizacion;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -18,21 +17,15 @@ class AdminController extends Controller
         $totalProductos = Producto::count();
         $totalCategorias = Categoria::count();
         $totalPedidos = Pedido::count();
-        $totalCotizaciones = Cotizacion::count();
         
         // Últimos pedidos recientes
         $pedidosRecientes = Pedido::latest()->take(5)->get();
-        
-        // Cotizaciones pendientes
-        $cotizacionesPendientes = Cotizacion::where('estado', 'pendiente')->count();
 
         return view('admin.dashboard', compact(
             'totalProductos',
             'totalCategorias',
             'totalPedidos',
-            'totalCotizaciones',
-            'pedidosRecientes',
-            'cotizacionesPendientes'
+            'pedidosRecientes'
         ));
     }
 
@@ -236,48 +229,6 @@ class AdminController extends Controller
         $producto->delete();
 
         return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado exitosamente');
-    }
-
-    // ========== COTIZACIONES ==========
-
-    /**
-     * Listar todas las cotizaciones
-     */
-    public function indexCotizaciones()
-    {
-        $cotizaciones = Cotizacion::with('usuario')->latest()->paginate(10);
-        return view('admin.cotizaciones.index', compact('cotizaciones'));
-    }
-
-    /**
-     * Ver detalles de cotización
-     */
-    public function showCotizacion(Cotizacion $cotizacion)
-    {
-        return view('admin.cotizaciones.show', compact('cotizacion'));
-    }
-
-    /**
-     * Cambiar estado de cotización
-     */
-    public function updateEstadoCotizacion(Request $request, Cotizacion $cotizacion)
-    {
-        $validated = $request->validate([
-            'estado' => 'required|in:pendiente,revisado,aprobado,rechazado',
-        ]);
-
-        $cotizacion->update($validated);
-
-        return redirect()->route('admin.cotizaciones.show', $cotizacion)->with('success', 'Estado de cotización actualizado');
-    }
-
-    /**
-     * Eliminar cotización
-     */
-    public function destroyCotizacion(Cotizacion $cotizacion)
-    {
-        $cotizacion->delete();
-        return redirect()->route('admin.cotizaciones.index')->with('success', 'Cotización eliminada exitosamente');
     }
 
     // ========== PEDIDOS ==========
