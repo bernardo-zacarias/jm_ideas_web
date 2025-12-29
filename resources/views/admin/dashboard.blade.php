@@ -38,17 +38,6 @@
             <i class="fas fa-shopping-cart text-purple-500 text-4xl opacity-20"></i>
         </div>
     </div>
-
-    <!-- Total Cotizaciones -->
-    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm font-semibold">Cotizaciones</p>
-                <p class="text-3xl font-bold text-gray-800">{{ $totalCotizaciones }}</p>
-            </div>
-            <i class="fas fa-file-contract text-orange-500 text-4xl opacity-20"></i>
-        </div>
-    </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
