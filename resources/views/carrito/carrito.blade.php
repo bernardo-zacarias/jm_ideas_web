@@ -69,11 +69,6 @@
                             <i class="fa-solid fa-store"></i>
                             Ir al Catálogo
                         </a>
-
-                        <a href="{{ route('cotizador.index') }}" class="px-8 py-4 border-2 border-jm-orange text-jm-orange font-bold rounded-xl hover:bg-jm-orange/10 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-calculator"></i>
-                            Ir al Cotizador
-                        </a>
                     </div>
                 </div>
             </div>
@@ -113,21 +108,13 @@
                                 $nombreCategoria = isset($item->producto->categoria) && $item->producto->categoria ? $item->producto->categoria->nombre : 'Sin categoría';
                                 $nombreItem = 'Producto de catálogo';
                             }
-                            // Caso 2: Producto del cotizador (solo si es objeto con relaciones)
-                            elseif ($cotizacion_id && !$isArray && isset($item->cotizacion) && $item->cotizacion) {
-                                if (isset($item->cotizacion->producto) && $item->cotizacion->producto) {
-                                    $nombreProducto = $item->cotizacion->producto->nombre;
-                                    $nombreCategoria = isset($item->cotizacion->producto->categoria) && $item->cotizacion->producto->categoria ? $item->cotizacion->producto->categoria->nombre : 'Sin categoría';
-                                }
-                                $nombreItem = $item->cotizacion->nombre ?? 'Cotización personalizada';
-                            }
-                            // Caso 3: Item de sesión (array) - usar el nombre que guardamos
+                            // Caso 2: Item de sesión (array) - usar el nombre que guardamos
                             elseif ($isArray && isset($item['producto_nombre'])) {
                                 $nombreProducto = $item['producto_nombre'];
-                                $nombreItem = $esCotizado ? 'Cotización Personalizada' : 'Producto de Catálogo';
+                                $nombreItem = 'Producto de Catálogo';
                             }
                             
-                            $tipoOrigen = $esCotizado ? 'Cotización Detallada' : 'Compra de Catálogo';
+                            $tipoOrigen = 'Compra de Catálogo';
                         @endphp
                         
                         <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300">
@@ -150,14 +137,6 @@
                                         elseif ($producto_id && !$isArray && isset($item->producto) && $item->producto) {
                                             if (isset($item->producto->imagen) && $item->producto->imagen) {
                                                 $imagenRuta = $item->producto->imagen;
-                                                $imagenProducto = asset('images/productos/' . $imagenRuta);
-                                                $tieneImagen = true;
-                                            }
-                                        }
-                                        // Caso 2: Producto del cotizador (objeto BD)
-                                        elseif ($cotizacion_id && !$isArray && isset($item->cotizacion) && $item->cotizacion) {
-                                            if (isset($item->cotizacion->producto) && $item->cotizacion->producto && isset($item->cotizacion->producto->imagen) && $item->cotizacion->producto->imagen) {
-                                                $imagenRuta = $item->cotizacion->producto->imagen;
                                                 $imagenProducto = asset('images/productos/' . $imagenRuta);
                                                 $tieneImagen = true;
                                             }

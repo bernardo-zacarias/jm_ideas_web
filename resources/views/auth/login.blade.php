@@ -98,13 +98,6 @@
             </form>
             
             <div class="mt-8 pt-6 border-t border-gray-200 space-y-4">
-                <a 
-                    href="{{ route('password.request') }}" 
-                    class="block text-center px-4 py-2 text-jm-orange hover:text-orange-600 font-medium transition-colors hover:underline"
-                >
-                    ¿Olvidaste tu contraseña?
-                </a>
-                
                 <div class="text-center text-sm text-gray-500">
                     ¿No tienes cuenta?
                     <a 

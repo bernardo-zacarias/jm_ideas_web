@@ -554,29 +554,6 @@
     }
 
 
-
-    function saveCotizacion(design) {
-        // Enviar al servidor para guardar en la tabla cotizaciones
-        fetch('{{ route("catalogo.saveCotizacion") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                tipo_producto: 'taza',
-                imagen_diseño: design.image,
-                color_producto: design.mugColor,
-                descripcion: 'Diseño de taza personalizada creado en el diseñador 3D',
-                notas: JSON.stringify({
-                    uploadedImage: design.uploadedImage ? 'Sí' : 'No',
-                    timestamp: design.timestamp
-                })
-            })
-        }).then(response => response.json())
-          .catch(error => console.error('Error:', error));
-    }
-
     // Inicializar cuando carga la página
     document.addEventListener('DOMContentLoaded', initThreeJS);
 </script>

@@ -170,12 +170,6 @@
                         @endforeach
                     </div>
                 </div>
-
-                <div class="p-6 bg-gradient-to-br from-jm-orange to-cyan-400 rounded-3xl text-white shadow-lg">
-                    <h4 class="font-black mb-2 text-lg">¿Buscas al por Mayor?</h4>
-                    <p class="text-sm text-white/90 mb-4">Tenemos precios especiales para empresas y eventos.</p>
-                    <a href="{{ route('cotizador.index') }}" class="bg-jm-black text-white w-full py-2 rounded-xl font-bold text-sm hover:bg-white hover:text-jm-black transition-all inline-block text-center">Cotizar Ahora</a>
-                </div>
             </div>
         </aside>
 
